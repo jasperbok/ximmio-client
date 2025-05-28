@@ -1,3 +1,7 @@
 [project]
 name = "ximmio-client"
 version = "0.1.0"
+dependencies = [
+    "pydantic[timezone] >= 2",
+    "httpx",
+]
