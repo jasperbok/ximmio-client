@@ -1,6 +1,6 @@
 import httpx
 
-from .models import Address, Response
+from .models import Address, Category, Response
 
 
 API_BASE_URL = "https://wasteapi.ximmio.com/api"
@@ -29,3 +29,18 @@ class Client:
         response = Response.model_validate(resp.json())
 
         return Address.model_validate(response.data_list[0])
+
+    def get_categories(self, community: str) -> list[Category]:
+        resp = httpx.post(
+            f"{API_BASE_URL}/ListCategories",
+            json={
+                "community": community,
+                "companyCode": self.company_code,
+                "reportType": "WASTEABC",
+            },
+        )
+        resp.raise_for_status()
+
+        response = Response.model_validate(resp.json())
+
+        return [Category.model_validate(d) for d in response.data_list]
