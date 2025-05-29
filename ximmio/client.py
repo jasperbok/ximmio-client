@@ -1,6 +1,8 @@
+from datetime import date, timedelta
+
 import httpx
 
-from .models import Address, Category, Response
+from .models import Address, Calendar, Category, Response
 
 
 API_BASE_URL = "https://wasteapi.ximmio.com/api"
@@ -46,3 +48,19 @@ class Client:
         response = Response.model_validate(resp.json())
 
         return [Category.model_validate(d) for d in response.data_list]
+
+    def get_calendar(self):
+        resp = httpx.post(
+            f"{API_BASE_URL}/GetCalendar",
+            json={
+                "companyCode": self.company_code,
+                "uniqueAddressID": self.address.unique_id,
+                "startDate": date.today().strftime("%Y-%m-%d"),
+                "endDate": (date.today() + timedelta(weeks=4)).strftime("%Y-%m-%d"),
+            },
+        )
+        resp.raise_for_status()
+
+        response = Response.model_validate(resp.json())
+
+        return [Calendar.model_validate(d) for d in response.data_list]
