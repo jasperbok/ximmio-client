@@ -5,7 +5,7 @@ A Python client for Ximmio's Waste API.
 ## Usage
 
 ```python
-from ximmio import Client
+from ximmio_client import Client
 
 # Create a Client instance.
 client = Client(
