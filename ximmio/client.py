@@ -10,9 +10,11 @@ class Client:
     """The Ximmio Waste API client."""
 
     company_code: str
+    address: Address | None = None
 
-    def __init__(self, company_code: str) -> None:
+    def __init__(self, company_code: str, house_number: int, postal_code: str) -> None:
         self.company_code = company_code
+        self.address = self.get_address(house_number, postal_code)
 
     def get_address(self, house_number: int, postal_code: str) -> Address:
         """Return the full address that belongs to the postal code and house number."""
@@ -30,11 +32,11 @@ class Client:
 
         return Address.model_validate(response.data_list[0])
 
-    def get_categories(self, community: str) -> list[Category]:
+    def get_categories(self) -> list[Category]:
         resp = httpx.post(
             f"{API_BASE_URL}/ListCategories",
             json={
-                "community": community,
+                "community": self.address.community,
                 "companyCode": self.company_code,
                 "reportType": "WASTEABC",
             },
