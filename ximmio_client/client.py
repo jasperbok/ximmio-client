@@ -35,6 +35,10 @@ class Client:
         return Address.model_validate(response.data_list[0])
 
     def get_categories(self) -> list[Category]:
+        if self.address is None:
+            err = "self.address is None, but it should be set during __init__()"
+            raise RuntimeError(err)
+
         resp = httpx.post(
             f"{API_BASE_URL}/ListCategories",
             json={
@@ -50,6 +54,10 @@ class Client:
         return [Category.model_validate(d) for d in response.data_list]
 
     def get_calendar(self):
+        if self.address is None:
+            err = "self.address is None, but it should be set during __init__()"
+            raise RuntimeError(err)
+
         resp = httpx.post(
             f"{API_BASE_URL}/GetCalendar",
             json={
